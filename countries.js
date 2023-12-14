@@ -4,7 +4,7 @@ let Country_List = {
 
   PLN: "PL",
   
-  USD: "US",
+  
   
 };
 
@@ -136,6 +136,7 @@ let Country_List = {
 //   BWP: "BW",
 //   BYR: "BY",
 //   BZD: "BZ",
+// USD: "US",
 //   CAD: "CA",
 //   CDF: "CD",
 //   XAF: "CF",
