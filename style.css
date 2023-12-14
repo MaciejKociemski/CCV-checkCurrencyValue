@@ -68,14 +68,14 @@ body::after {
 }
 
 p {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   margin-bottom: 5px;
 }
 
 input {
   height: 30px;
   width: 100%;
-  font-size: 0.7rem;
+  font-size: 1rem;
   border-radius: 8px;
   padding: 0 15px;
   background: transparent;
@@ -131,9 +131,9 @@ input:focus {
   width: 100%;
   cursor: pointer;
   font-size: 0.7rem;
-  background: #bbb;
+  /* background: #000; */
   margin: 0 -5px 0 5px;
-  color: #fff;
+  color: #000;
 }
 
 .container .convert-box .select-input select option {
@@ -163,7 +163,13 @@ button {
   height: 30px;
   border-radius: 12px;
   box-shadow: 5px 5px 3px rgba(244, 238, 238, 0.1);
-  margin-top: 5px;
+  margin-top: 15px;
+}
+
+button:hover{
+    cursor: pointer;
+    background-color: #333;
+    color: #fff;
 }
 
 .footer {
