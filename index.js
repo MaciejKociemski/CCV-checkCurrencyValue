@@ -1,3 +1,4 @@
+// Selectors
 const fromCur = document.querySelector(".from select");
 const toCur = document.querySelector(".to select");
 const getBtn = document.querySelector("form button");
@@ -5,30 +6,39 @@ const exIcon = document.querySelector("form .reverse");
 const amount = document.querySelector("form input");
 const exRateTxt = document.querySelector("form .result");
 
-
+// Initial values
 [fromCur.value, toCur.value] = ["GMD", "PLN"];
 amount.value = 100;
 
-[fromCur, toCur].forEach((select, i) => {
+// Function to set up currency options
+function setupCurrencyOptions(select, initialCode) {
   for (let curCode in Country_List) {
-    const selected =
-      (i === 0 && curCode === "GMD") || (i === 1 && curCode === "PLN")
-        ? "selected"
-        : "";
+    const selected = curCode === initialCode ? "selected" : "";
     select.insertAdjacentHTML(
       "beforeend",
       `<option value="${curCode}" ${selected}>${curCode}</option>`
     );
   }
+}
+
+// Function to update flag image
+function updateFlagImage(select) {
+  const code = select.value;
+  const imgTag = select.parentElement.querySelector("img");
+  imgTag.src = `https://flagcdn.com/48x36/${Country_List[
+    code
+  ].toLowerCase()}.png`;
+}
+
+// Event listeners for currency dropdowns
+[fromCur, toCur].forEach((select, i) => {
+  setupCurrencyOptions(select, i === 0 ? "GMD" : "PLN");
   select.addEventListener("change", () => {
-    const code = select.value;
-    const imgTag = select.parentElement.querySelector("img");
-    imgTag.src = `https://flagcdn.com/48x36/${Country_List[
-      code
-    ].toLowerCase()}.png`;
+    updateFlagImage(select);
   });
 });
 
+// Function to get exchange rate from API
 async function getExchangeRate() {
   const amountVal = amount.value || 100;
   exRateTxt.innerText = "Getting exchange rate...";
@@ -45,19 +55,13 @@ async function getExchangeRate() {
   }
 }
 
-
+// Event listeners for window load, button click, and exchange icon click
 window.addEventListener("load", () => {
   [fromCur, toCur].forEach((select) => {
-    const code = select.value;
-    const imgTag = select.parentElement.querySelector("img");
-    imgTag.src = `https://flagcdn.com/48x36/${Country_List[
-      code
-    ].toLowerCase()}.png`;
+    updateFlagImage(select);
   });
   getExchangeRate();
 });
-
-
 
 getBtn.addEventListener("click", (e) => {
   e.preventDefault();
@@ -67,11 +71,7 @@ getBtn.addEventListener("click", (e) => {
 exIcon.addEventListener("click", () => {
   [fromCur.value, toCur.value] = [toCur.value, fromCur.value];
   [fromCur, toCur].forEach((select) => {
-    const code = select.value;
-    const imgTag = select.parentElement.querySelector("img");
-    imgTag.src = `https://flagcdn.com/48x36/${Country_List[
-      code
-    ].toLowerCase()}.png`;
+    updateFlagImage(select);
   });
   getExchangeRate();
 });
