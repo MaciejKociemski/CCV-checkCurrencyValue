@@ -137,7 +137,7 @@ input:focus {
 }
 
 .result {
-  font-size: 28px;
+  font-size: 22px;
   color: #fff;
   margin-top: 20px;
   animation: pulse 1s infinite;

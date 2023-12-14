@@ -9,8 +9,12 @@ const body = document.body;
 const switchBtn = document.getElementById("switchBtn");
 
 // Initial values
-[fromCur.value, toCur.value] = ["GMD", "PLN"];
-amount.value = 100;
+let fromCurrency = localStorage.getItem("fromCurrency") || "GMD";
+let toCurrency = localStorage.getItem("toCurrency") || "PLN";
+let amountValue = localStorage.getItem("amountValue") || 100;
+
+[fromCur.value, toCur.value] = [fromCurrency, toCurrency];
+amount.value = amountValue;
 
 // Function to set up currency options
 function setupCurrencyOptions(select, initialCode) {
@@ -28,7 +32,6 @@ function toggleDarkMode() {
   body.classList.toggle("dark-mode");
   const isDarkMode = body.classList.contains("dark-mode");
   body.style.backgroundColor = isDarkMode ? "#121212" : "#999";
-  // body.style.color = isDarkMode ? "#999" : "#000";
 }
 
 // Function to update flag image
@@ -42,7 +45,7 @@ function updateFlagImage(select) {
 
 // Event listeners for currency dropdowns
 [fromCur, toCur].forEach((select, i) => {
-  setupCurrencyOptions(select, i === 0 ? "GMD" : "PLN");
+  setupCurrencyOptions(select, i === 0 ? fromCurrency : toCurrency);
   select.addEventListener("change", () => {
     updateFlagImage(select);
   });
@@ -50,20 +53,25 @@ function updateFlagImage(select) {
 
 // Function to get exchange rate from API
 async function getExchangeRate() {
-  const amountVal = amount.value || 100;
+  amountValue = amount.value || 100;
+  localStorage.setItem("amountValue", amountValue);
+
   exRateTxt.innerText = "Getting exchange rate...";
   try {
     const response = await fetch(
-      `https://v6.exchangerate-api.com/v6/93ffb97de52b52b333dbd9c9/latest/${fromCur.value}`
+      `https://v6.exchangerate-api.com/v6/93ffb97de52b52b333dbd9c9/latest/${fromCurrency}`
     );
     const result = await response.json();
-    const exchangeRate = result.conversion_rates[toCur.value];
-    const totalExRate = (amountVal * exchangeRate).toFixed(2);
-    exRateTxt.innerText = `${amountVal} ${fromCur.value} = ${totalExRate} ${toCur.value}`;
+    const exchangeRate = result.conversion_rates[toCurrency];
+    localStorage.setItem("exchangeRate", exchangeRate); // storing values in localStorage
+    const totalExRate = (amountValue * exchangeRate).toFixed(2);
+    exRateTxt.innerText = `${amountValue} ${fromCurrency} = ${totalExRate} ${toCurrency}`;
   } catch (error) {
-    exRateTxt.innerText = "Something went wrong...";
+    // reading values from  localStorage 
+    exRateTxt.innerText = "Using stored exchange rate...";
   }
 }
+
 // Event listener for the switch button
 switchBtn.addEventListener("click", toggleDarkMode);
 
@@ -81,7 +89,10 @@ getBtn.addEventListener("click", (e) => {
 });
 
 exIcon.addEventListener("click", () => {
-  [fromCur.value, toCur.value] = [toCur.value, fromCur.value];
+  [fromCurrency, toCurrency] = [toCurrency, fromCurrency];
+  localStorage.setItem("fromCurrency", fromCurrency);
+  localStorage.setItem("toCurrency", toCurrency);
+  [fromCur.value, toCur.value] = [fromCurrency, toCurrency];
   [fromCur, toCur].forEach((select) => {
     updateFlagImage(select);
   });
