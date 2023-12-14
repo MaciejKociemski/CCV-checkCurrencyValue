@@ -5,6 +5,8 @@ const getBtn = document.querySelector("form button");
 const exIcon = document.querySelector("form .reverse");
 const amount = document.querySelector("form input");
 const exRateTxt = document.querySelector("form .result");
+const body = document.body;
+const switchBtn = document.getElementById("switchBtn");
 
 // Initial values
 [fromCur.value, toCur.value] = ["GMD", "PLN"];
@@ -19,6 +21,14 @@ function setupCurrencyOptions(select, initialCode) {
       `<option value="${curCode}" ${selected}>${curCode}</option>`
     );
   }
+}
+
+// Function to toggle between light and dark mode
+function toggleDarkMode() {
+  body.classList.toggle("dark-mode");
+  const isDarkMode = body.classList.contains("dark-mode");
+  body.style.backgroundColor = isDarkMode ? "#121212" : "#999";
+  // body.style.color = isDarkMode ? "#999" : "#000";
 }
 
 // Function to update flag image
@@ -54,6 +64,8 @@ async function getExchangeRate() {
     exRateTxt.innerText = "Something went wrong...";
   }
 }
+// Event listener for the switch button
+switchBtn.addEventListener("click", toggleDarkMode);
 
 // Event listeners for window load, button click, and exchange icon click
 window.addEventListener("load", () => {
