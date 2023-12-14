@@ -5,10 +5,14 @@ const exIcon = document.querySelector("form .reverse");
 const amount = document.querySelector("form input");
 const exRateTxt = document.querySelector("form .result");
 
+
+[fromCur.value, toCur.value] = ["GMD", "PLN"];
+amount.value = 100;
+
 [fromCur, toCur].forEach((select, i) => {
   for (let curCode in Country_List) {
     const selected =
-      (i === 0 && curCode === "USD") || (i === 1 && curCode === "GBP")
+      (i === 0 && curCode === "GMD") || (i === 1 && curCode === "PLN")
         ? "selected"
         : "";
     select.insertAdjacentHTML(
@@ -26,7 +30,7 @@ const exRateTxt = document.querySelector("form .result");
 });
 
 async function getExchangeRate() {
-  const amountVal = amount.value || 1;
+  const amountVal = amount.value || 100;
   exRateTxt.innerText = "Getting exchange rate...";
   try {
     const response = await fetch(
@@ -41,9 +45,20 @@ async function getExchangeRate() {
   }
 }
 
-// Event listeners for button and exchange icon click
 
-window.addEventListener("load", getExchangeRate);
+window.addEventListener("load", () => {
+  [fromCur, toCur].forEach((select) => {
+    const code = select.value;
+    const imgTag = select.parentElement.querySelector("img");
+    imgTag.src = `https://flagcdn.com/48x36/${Country_List[
+      code
+    ].toLowerCase()}.png`;
+  });
+  getExchangeRate();
+});
+
+
+
 getBtn.addEventListener("click", (e) => {
   e.preventDefault();
   getExchangeRate();
