@@ -27,6 +27,14 @@ body {
   backdrop-filter: blur(1.4px);
   -webkit-backdrop-filter: blur(7.4px);
   border: 1px solid rgba(244, 238, 238, 0.1);
+  margin-top: 20px;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .container {
+    margin-top: 0px; 
+  }
 }
 
 h2 {
@@ -180,5 +188,5 @@ button:hover {
 }
 
 .theme-switcher:hover {
-  color: #d0cda3;
+  color: #daa520;
 }
