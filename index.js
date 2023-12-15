@@ -9,16 +9,21 @@ const body = document.body;
 const switchBtn = document.getElementById("switchBtn");
 
 // Initial values
-let fromCurrency = localStorage.getItem("fromCurrency") || "GMD";
-let toCurrency = localStorage.getItem("toCurrency") || "PLN";
-let amountValue = localStorage.getItem("amountValue") || 100;
+let fromCurrency = "GMD";
+let toCurrency = "PLN";
+let amountValue = 100;
+const exchangeRates = {
+  GMD: { PLN: 0.0605, GMD: 1 },
+  PLN: { GMD: 16.54, PLN: 1 },
+};
 
 [fromCur.value, toCur.value] = [fromCurrency, toCurrency];
 amount.value = amountValue;
 
 // Function to set up currency options
 function setupCurrencyOptions(select, initialCode) {
-  for (let curCode in Country_List) {
+  select.innerHTML = "";
+  for (let curCode in exchangeRates) {
     const selected = curCode === initialCode ? "selected" : "";
     select.insertAdjacentHTML(
       "beforeend",
@@ -43,33 +48,31 @@ function updateFlagImage(select) {
   ].toLowerCase()}.png`;
 }
 
+// Function to update currency options
+function updateCurrencyOptions() {
+  [fromCur, toCur].forEach((select, i) => {
+    const initialCode = i === 0 ? fromCurrency : toCurrency;
+    setupCurrencyOptions(select, initialCode);
+  });
+}
+
 // Event listeners for currency dropdowns
 [fromCur, toCur].forEach((select, i) => {
   setupCurrencyOptions(select, i === 0 ? fromCurrency : toCurrency);
   select.addEventListener("change", () => {
     updateFlagImage(select);
+    updateCurrencyOptions();
+    getExchangeRate();
   });
 });
 
-// Function to get exchange rate from API
-async function getExchangeRate() {
+// Function to get exchange rate
+function getExchangeRate() {
   amountValue = amount.value || 100;
-  localStorage.setItem("amountValue", amountValue);
+  const exchangeRate = exchangeRates[fromCurrency][toCurrency];
 
-  exRateTxt.innerText = "Getting exchange rate...";
-  try {
-    const response = await fetch(
-      `https://v6.exchangerate-api.com/v6/93ffb97de52b52b333dbd9c9/latest/${fromCurrency}`
-    );
-    const result = await response.json();
-    const exchangeRate = result.conversion_rates[toCurrency];
-    localStorage.setItem("exchangeRate", exchangeRate); // storing values in localStorage
-    const totalExRate = (amountValue * exchangeRate).toFixed(2);
-    exRateTxt.innerText = `${amountValue} ${fromCurrency} = ${totalExRate} ${toCurrency}`;
-  } catch (error) {
-    // reading values from  localStorage 
-    exRateTxt.innerText = "Using stored exchange rate...";
-  }
+  const totalExRate = (amountValue * exchangeRate).toFixed(2);
+  exRateTxt.innerText = `${amountValue} ${fromCurrency} = ${totalExRate} ${toCurrency}`;
 }
 
 // Event listener for the switch button
@@ -80,6 +83,7 @@ window.addEventListener("load", () => {
   [fromCur, toCur].forEach((select) => {
     updateFlagImage(select);
   });
+  updateCurrencyOptions();
   getExchangeRate();
 });
 
@@ -90,8 +94,6 @@ getBtn.addEventListener("click", (e) => {
 
 exIcon.addEventListener("click", () => {
   [fromCurrency, toCurrency] = [toCurrency, fromCurrency];
-  localStorage.setItem("fromCurrency", fromCurrency);
-  localStorage.setItem("toCurrency", toCurrency);
   [fromCur.value, toCur.value] = [fromCurrency, toCurrency];
   [fromCur, toCur].forEach((select) => {
     updateFlagImage(select);
