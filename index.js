@@ -36,7 +36,7 @@ function setupCurrencyOptions(select, initialCode) {
 function toggleDarkMode() {
   body.classList.toggle("dark-mode");
   const isDarkMode = body.classList.contains("dark-mode");
-  body.style.backgroundColor = isDarkMode ? "#daa520" : "#999";
+  body.style.backgroundColor = isDarkMode ? "#121212" : "#daa520";
 }
 
 // Function to update flag image
