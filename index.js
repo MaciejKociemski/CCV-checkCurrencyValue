@@ -66,14 +66,32 @@ function updateCurrencyOptions() {
   });
 });
 
-// Function to get exchange rate
-function getExchangeRate() {
-  amountValue = amount.value || 100;
-  const exchangeRate = exchangeRates[fromCurrency][toCurrency];
 
-  const totalExRate = (amountValue * exchangeRate).toFixed(2);
-  exRateTxt.innerText = `${amountValue} ${fromCurrency} = ${totalExRate} ${toCurrency}`;
+function getExchangeRate() {
+  
+  const isAmountValid = /^[0-9]+(\.[0-9]+)?$/.test(amount.value);
+
+  
+  if (typeof Notiflix !== 'undefined') {
+    if (!isAmountValid) {
+     
+      Notiflix.Notify.Failure("enter correct value in amount field");
+      return;
+    }
+
+    amountValue = parseFloat(amount.value) || 100;
+    const exchangeRate = exchangeRates[fromCurrency][toCurrency];
+
+    const totalExRate = (amountValue * exchangeRate).toFixed(2);
+    exRateTxt.innerText = `${amountValue} ${fromCurrency} = ${totalExRate} ${toCurrency}`;
+  } else {
+   
+    alert(
+      "Notiflix was not loaded correctly. Try again or check the configuration"
+    );
+  }
 }
+
 
 // Event listener for the switch button
 switchBtn.addEventListener("click", toggleDarkMode);
